@@ -252,23 +252,62 @@ def parse_vehicle(url, page, cfg):
 
 
 # ----------------------------------------------------------------------------- completeness check
+def _path(obj, dotted):
+    for part in dotted.split("."):
+        obj = obj.get(part) if isinstance(obj, dict) else None
+    return obj
+
+
+def _norm(val, how):
+    if how == "number":
+        digits = re.sub(r"\D", "", str(val)) if val is not None else ""
+        return int(digits) if digits else None
+    if how == "set":
+        return set(val or [])
+    return val
+
+
 def cross_check(cfg, cars, fx):
+    """True = verified and equal; False = mismatch OR could not be verified (never reported as success);
+    None = no cross-check configured (a warning, the result stays unverified)."""
     cc = cfg.get("cross_check")
     if not cc:
-        log("cross-check: none configured (look for a site search/REST API and add one)")
+        log("cross-check: NONE CONFIGURED - completeness is UNVERIFIED (look for a site search/REST API and add one)")
         return None
     body = fx.get(cc["url"])
     if not body:
-        log("cross-check: endpoint not reachable - SKIPPED")
-        return None
+        log("cross-check: endpoint not reachable - NOT VERIFIED (exit code 1)")
+        return False
     api = json.loads(body)
     items = api.get(cc["list_key"], []) if isinstance(api, dict) else api
     api_ids = {str(i[cc["id_key"]]) for i in items}
     ours = {str(c.get(cc["our_id_field"])) for c in cars}
     ok = api_ids == ours
     total = api.get(cc.get("total_key", "total")) if isinstance(api, dict) else len(items)
-    log(f"cross-check: site reports {total}, scraper has {len(cars)} -> "
+    log(f"cross-check (ids): site reports {total}, scraper has {len(cars)} -> "
         + ("MATCH" if ok else f"MISMATCH (only API: {sorted(api_ids - ours)[:5]}, only ours: {sorted(ours - api_ids)[:5]})"))
+
+    ff = cc.get("fields")  # optional field-level check against a second API endpoint
+    if ff:
+        fbody = fx.get(ff["url"])
+        if not fbody:
+            log("cross-check (fields): endpoint not reachable - NOT VERIFIED (exit code 1)")
+            return False
+        by_url = {c["listing_url"]: c for c in cars}
+        records = json.loads(fbody)
+        diffs = []
+        for r in records:
+            c = by_url.get(r.get(ff.get("link_key", "link")))
+            if c is None:
+                diffs.append(f"{r.get(ff.get('link_key', 'link'))}: not in our result")
+                continue
+            for chk in ff["checks"]:
+                if _norm(_path(c, chk["ours"]), chk.get("as")) != _norm(_path(r, chk["api"]), chk.get("as")):
+                    diffs.append(f"{c['listing_url']}: {chk['ours']}")
+        f_ok = not diffs and len(records) == len(cars)
+        log(f"cross-check (fields {', '.join(k['ours'] for k in ff['checks'])}): {len(records)} records -> "
+            + ("MATCH" if f_ok else f"MISMATCH ({len(diffs)}, e.g. {diffs[:3]})"))
+        ok = ok and f_ok
     return ok
 
 
@@ -316,7 +355,7 @@ def main():
         json.dump(cars, f, ensure_ascii=False, indent=2)
     log(f"wrote {len(cars)} vehicles to {a.out}; rejected (no vehicle markup): {len(rejected)}; failed: {len(failed)}")
     ok = cross_check(cfg, cars, fx) if not a.limit else None
-    sys.exit(1 if failed or ok is False else 0)
+    sys.exit(1 if failed or ok is False else 0)  # ok is None = nothing configured: warned loudly, result stays unverified
 
 
 def _bootstrap():

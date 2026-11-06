@@ -16,6 +16,7 @@ import sys
 from collections import Counter
 
 REQUIRED = ["listing_url", "condition", "make", "model", "variant", "price", "mileage_km", "equipment", "images"]
+ESSENTIAL = {"listing_url", "condition", "make", "model", "price", "images"}  # empty = ERROR; the rest only warns (a site may not publish it)
 NUMERIC = ["year", "mileage_km", "power_kw", "power_ps", "engine_displacement_ccm"]
 
 
@@ -43,11 +44,13 @@ def main():
             if k not in c or c[k] in (None, "", []):
                 if k in ("mileage_km",) and c.get("condition") == "new":
                     continue
-                warns.append(f"{tag}: empty {k}")
+                (errors if k in ESSENTIAL else warns).append(f"{tag}: empty {k}")
         for k in NUMERIC:
             if c.get(k) is not None and not isinstance(c[k], (int, float)):
                 errors.append(f"{tag}: {k} is {type(c[k]).__name__}, must be number")
         p = (c.get("price") or {}).get("amount")
+        if "price" in ESSENTIAL and p is None and c.get("price") not in (None, "", []):
+            errors.append(f"{tag}: price has no amount")
         if p is not None and (not isinstance(p, (int, float)) or p <= 0):
             errors.append(f"{tag}: bad price {p!r}")
         if isinstance(p, float) and abs(p - round(p)) > 0 and abs(p * 100 - round(p * 100)) > 1e-6:

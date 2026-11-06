@@ -55,7 +55,7 @@ The skill is a playbook: Claude reads `SKILL.md` and runs these scripts itself.
   `SCRAPER_USER_AGENT` (it overrides everything). Example: `Acme-Research/1.0 (+https://acme.example/contact)`.
 - Keep the 1 s delay (or more), read the site's terms and robots.txt, collect only what the public pages show, and do not
   keep personal data (named staff, direct lines, personal e-mails).
-- Exit codes of `dealer_scrape.py`: 0 ok; 1 pages failed or API cross-check mismatch; 2 no vehicle URLs found; 3 every page
+- Exit codes of `dealer_scrape.py`: 0 ok; 1 pages failed, API cross-check mismatch or API unreachable (not verified); 2 no vehicle URLs found; 3 every page
   rejected. A non-zero exit is never "fine".
 
 ## Troubleshooting

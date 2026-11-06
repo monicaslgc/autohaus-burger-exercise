@@ -23,7 +23,28 @@
     "list_key": "vehicles",
     "id_key": "id",
     "total_key": "total",
-    "our_id_field": "vehicle_id"
+    "our_id_field": "vehicle_id",
+    "fields": {
+      "url": "/wp-json/ecc/v1/cars",
+      "link_key": "link",
+      "checks": [
+        {
+          "ours": "price.amount",
+          "api": "filters.Preis",
+          "as": "number"
+        },
+        {
+          "ours": "mileage_km",
+          "api": "filters.Kilometer",
+          "as": "number"
+        },
+        {
+          "ours": "images",
+          "api": "images",
+          "as": "set"
+        }
+      ]
+    }
   },
   "parse": {
     "jsonld_types": [
