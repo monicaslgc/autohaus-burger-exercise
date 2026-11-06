@@ -282,10 +282,11 @@ def cross_check(cfg, cars, fx):
     items = api.get(cc["list_key"], []) if isinstance(api, dict) else api
     api_ids = {str(i[cc["id_key"]]) for i in items}
     ours = {str(c.get(cc["our_id_field"])) for c in cars}
-    ok = api_ids == ours
     total = api.get(cc.get("total_key", "total")) if isinstance(api, dict) else len(items)
+    ok = api_ids == ours and total == len(cars) == len(items)  # announced total, returned items and ours must agree
     log(f"cross-check (ids): site reports {total}, scraper has {len(cars)} -> "
-        + ("MATCH" if ok else f"MISMATCH (only API: {sorted(api_ids - ours)[:5]}, only ours: {sorted(ours - api_ids)[:5]})"))
+        + ("MATCH" if ok else f"MISMATCH (only API: {sorted(api_ids - ours)[:5]}, only ours: {sorted(ours - api_ids)[:5]}, "
+                              f"API returns {len(items)} items)"))
 
     ff = cc.get("fields")  # optional field-level check against a second API endpoint
     if ff:

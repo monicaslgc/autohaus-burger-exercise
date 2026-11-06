@@ -74,6 +74,9 @@ def main():
             need("street Ehinger Stra\u00dfe", "ehinger stra" in blob.lower())
         for rng in re.findall(r"\d\d:\d\d-\d\d:\d\d", r["opening_hours"]):
             need(f"hours {rng}", rng in blob_n)
+        # the days too: every German segment (day range + times, or "geschlossen") must appear as written on the site
+        for seg in filter(None, (x.strip() for x in r["opening_hours_text_de"].split(";"))):
+            need(f"hours text '{seg}'", norm(seg) in blob_n)
     print(f"{len(rows)} rows, {checked} facts checked against the live site")
     for p in problems:
         print("NOT FOUND:", p)

@@ -106,9 +106,10 @@ def api_check(cars, delay):
     api = json.loads(body)
     api_ids = {str(v["id"]) for v in api.get("vehicles", [])}
     ours = {str(c["vehicle_id"]) for c in cars}
-    ids_ok = api_ids == ours
+    listed = len(api.get("vehicles", []))
+    ids_ok = api_ids == ours and api.get("total") == len(cars) == listed  # announced total, returned items and ours must agree
     verdict = "MATCH" if ids_ok else f"MISMATCH (only API: {len(api_ids - ours)}, only ours: {len(ours - api_ids)})"
-    print(f"API cross-check (ids): site reports {api.get('total')} cars, scraper has {len(cars)} -> {verdict}", file=sys.stderr)
+    print(f"API cross-check (ids): site reports {api.get('total')} (returns {listed}), scraper has {len(cars)} -> {verdict if ids_ok or api_ids != ours else 'MISMATCH (total differs)'}", file=sys.stderr)
 
     body = get(f"{BASE}/wp-json/ecc/v1/cars", delay)
     if not body:
@@ -247,7 +248,8 @@ def parse_vehicle(url, page):
     v["equipment_by_category"] = equip
 
     # --- images --------------------------------------------------------------
-    imgs = list(car.get("image") or [])
+    raw_images = car.get("image") or []
+    imgs = [raw_images] if isinstance(raw_images, str) else list(raw_images)  # JSON-LD allows a string or a list
     imgs += re.findall(r'<div class="ecc-slide"><img src="([^"]+)"', page)
     v["images"] = list(dict.fromkeys(imgs))
     v["image_count"] = len(v["images"])

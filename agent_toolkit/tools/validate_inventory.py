@@ -31,6 +31,8 @@ def main():
     n = len(d)
     print(f"{n} vehicles; conditions={dict(Counter(c.get('condition') for c in d))}")
 
+    if n == 0:
+        errors.append("empty inventory: no vehicles")
     if a.expect is not None and n != a.expect:
         errors.append(f"count {n} != expected {a.expect} (did you union listing + sitemap + new-car page?)")
     if len({c.get("listing_url") for c in d}) != n:
