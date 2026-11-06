@@ -2,7 +2,13 @@
 
 The three deliverables of the exercise: (1) `inventory.json` + scraper, (2) `dealership_structure.csv`, (3) `writeup.md`. Quick start: `python scrape_inventory.py` then `python build_structure_csv.py` (Python 3.9+, nothing to install; details under "Run" below).
 
-Files
+## Write-up
+
+The site is WordPress with a custom vehicle post type outside the standard REST API, so I parsed the HTML. The /fahrzeuge/ listing (13 pages) holds all 126 cars, but 20 of them (9 new, 11 used) have letter-prefixed IDs such as hk2332. My first regex only matched numeric IDs, so it silently returned 106 cars and no new ones; the Neuwagen page and sitemap exposed the gap. The scraper now unions listing, sitemap and Neuwagen page: 126 vehicles (117 used, 9 new) with specs, equipment and all images, fetched at one request per second with an identifiable User-Agent. Count and IDs match the vehicle plugin's own public search API, and all 126 records agree with its data. A second URL family, 139 /autos/ pages, is an old June 2026 archive: only title, price and one image, all returning 404. I scraped it via the WordPress API into a separate archived_listings.json. Some data is absent: new cars have no first registration, electric cars report 0 ccm (null), most used cars publish no CO₂. German labels are normalised to English enums, originals kept in *_de fields. Dealership data comes from the Kontakt, Impressum and footer pages: one site, no Google Maps link (I built a search URL), and Saturday workshop hours conflict between pages (noted in the CSV). I used Claude Code to inspect the HTML and write the scrapers; it was fast at parsing, but the numeric-ID bug in its code went unnoticed until I compared counts.
+
+(The same text is in `writeup.md`.)
+
+## Files
 - `archived_listings.json` + `scrape_archive.py` - the 139 old `/autos/` pages (June 2026 snapshot): title, price, category, 1 image (dead link, HTTP 404). Mileage/year/equipment are not published there, so they are `null`. Kept apart from live stock on purpose
 - `inventory.json` - 126 vehicles (117 used, 9 new), English keys, numeric types, all image URLs
 - `dealership_structure.csv` - group > location > departments (13 rows, UTF-8, comma separated, `;` inside multi-value cells). Hierarchy via `id` / `parent_id` (import key) plus `parent_name`, `level` and `hierarchy_path` (readability)
