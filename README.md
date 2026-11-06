@@ -1,7 +1,5 @@
 # Seez candidate exercise - Autohaus Burger (autohaus-burger.de)
 
-Submitted by **Monica Costa** - GitHub: [github.com/monicaslgc](https://github.com/monicaslgc) - LinkedIn: [linkedin.com/in/monicasofiacosta](https://www.linkedin.com/in/monicasofiacosta) - Repository: [github.com/monicaslgc/autohaus-burger-exercise](https://github.com/monicaslgc/autohaus-burger-exercise)
-
 The three deliverables of the exercise: (1) `inventory.json` + scraper, (2) `dealership_structure.csv`, (3) `writeup.md`. Quick start: `python scrape_inventory.py` then `python build_structure_csv.py` (Python 3.9+, nothing to install; details under "Run" below).
 
 Files
