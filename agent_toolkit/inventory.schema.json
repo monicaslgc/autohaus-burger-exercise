@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Dealer inventory (one array item per vehicle)",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["listing_url", "condition", "make", "model", "variant", "price", "mileage_km", "equipment", "images"],
+    "properties": {
+      "listing_url": {"type": "string", "format": "uri"},
+      "source_id": {"type": "string"},
+      "title": {"type": "string", "description": "Listing title exactly as shown on the site"},
+      "condition": {"enum": ["new", "used", "demonstrator", "damaged", "refurbished"]},
+      "make": {"type": "string"},
+      "model": {"type": "string"},
+      "generation": {"type": ["string", "null"], "description": "e.g. VIII, split out of the title when present"},
+      "variant": {"type": ["string", "null"], "description": "trim/engine/package text after make, model and generation"},
+      "year": {"type": ["integer", "null"], "description": "first registration year; null for new cars"},
+      "first_registration": {"type": ["string", "null"], "pattern": "^\\d{4}-\\d{2}$"},
+      "mileage_km": {"type": ["integer", "null"], "minimum": 0},
+      "price": {
+        "type": "object",
+        "required": ["amount", "currency"],
+        "properties": {
+          "amount": {"type": "number", "exclusiveMinimum": 0},
+          "currency": {"type": "string", "pattern": "^[A-Z]{3}$"},
+          "vat_note": {"type": ["string", "null"]},
+          "display": {"type": ["string", "null"], "description": "price text as shown"}
+        }
+      },
+      "power_kw": {"type": ["integer", "null"]},
+      "power_ps": {"type": ["integer", "null"]},
+      "engine_displacement_ccm": {"type": ["integer", "null"], "description": "null for electric"},
+      "transmission": {"enum": ["automatic", "manual", null]},
+      "drive_type": {"enum": ["front_wheel_drive", "rear_wheel_drive", "all_wheel_drive", null]},
+      "fuel_type": {"type": ["string", "null"], "description": "petrol, diesel, electric, hybrid_petrol, hybrid_diesel, cng, lpg"},
+      "emission_class": {"type": ["string", "null"]},
+      "hsn_tsn": {"type": ["string", "null"]},
+      "consumption_combined": {"type": ["object", "null"], "properties": {"value": {"type": "number"}, "unit": {"type": "string"}}},
+      "co2_g_per_km": {"type": ["number", "null"]},
+      "equipment": {"type": "array", "items": {"type": "string"}, "description": "flat, de-duplicated"},
+      "equipment_by_category": {"type": "object", "additionalProperties": {"type": "array", "items": {"type": "string"}}},
+      "images": {"type": "array", "items": {"type": "string", "format": "uri"}, "uniqueItems": true},
+      "image_count": {"type": "integer"},
+      "vehicle_id": {"type": ["string", "null"]},
+      "page_modified": {"type": ["string", "null"]},
+      "page_published": {"type": ["string", "null"]},
+      "pdf_url": {"type": ["string", "null"]}
+    },
+    "additionalProperties": true
+  }
+}

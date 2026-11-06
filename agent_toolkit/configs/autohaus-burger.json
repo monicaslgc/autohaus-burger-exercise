@@ -1,0 +1,85 @@
+{
+  "_comment": "Config for autohaus-burger.de (WordPress + vehicle plugin). Copy to configs/<dealer>.json and adapt the regexes for another site.",
+  "base_url": "https://autohaus-burger.de",
+  "user_agent": "Mozilla/5.0 (compatible; SeezCandidateExercise/1.0; polite scraper, 1 req/s)",
+  "accept_language": "de,en;q=0.7",
+  "delay": 1.0,
+  "currency": "EUR",
+  "sources": {
+    "vehicle_url_regex": "https://autohaus-burger\\.de/fahrzeuge/(?!page/|feed/)[A-Za-z0-9]+/",
+    "listing": {
+      "first": "/fahrzeuge/",
+      "next": "/fahrzeuge/page/{n}/"
+    },
+    "sitemaps": [
+      "/vehicle-sitemap.xml"
+    ],
+    "extra_pages": [
+      "/neuwagen/"
+    ]
+  },
+  "cross_check": {
+    "url": "/wp-json/ecc/v1/search",
+    "list_key": "vehicles",
+    "id_key": "id",
+    "total_key": "total",
+    "our_id_field": "vehicle_id"
+  },
+  "parse": {
+    "jsonld_types": [
+      "Car"
+    ],
+    "title_regex": "<h1 class=\"ecc-detail-title\">(.*?)</h1>",
+    "price_regex": "ecc-detail-price\">(.*?)</h2>",
+    "vat_regex": "ecc-detail-vat\">(.*?)</p>",
+    "spec_table_regex": "vehicle-summary-table.*?</table>",
+    "spec_row_regex": "<tr>\\s*<td>(.*?)</td>\\s*<td>(.*?)</td>",
+    "labels": {
+      "first_registration": "Erstzulassung",
+      "mileage": "Laufleistung",
+      "power": "Leistung",
+      "displacement": "Hubraum",
+      "transmission": "Getriebe",
+      "drive": "Antrieb",
+      "fuel": "Kraftstoff",
+      "emission_class": "Schadstoffklasse",
+      "hsn_tsn": "HSN/TSN"
+    },
+    "power_regex": "(\\d+)\\s*kW\\s*\\((\\d+)\\s*PS\\)",
+    "generation_regex": "^([IVX]{2,5})\\s*",
+    "consumption_block_regex": "Verbrauchs- und Emissionswerte.*?(?=Finanzierung berechnen|Interesse\\?)",
+    "co2_regex": "CO.{1,3}-Emission\\s*/\\s*km\\s*([\\d.,]+)\\s*g",
+    "equipment_block_regex": ">Ausstattung<(.*?)Verbrauchs- und Emissionswerte",
+    "image_regex": "<div class=\"ecc-slide\"><img src=\"([^\"]+)\"",
+    "vehicle_id_regex": "data-vehicle-id=\"(\\d+)\"",
+    "modified_regex": "article:modified_time\" content=\"([^\"]+)\"",
+    "published_regex": "\"datePublished\":\"([^\"]+)\"",
+    "pdf_link_regex": "href=\"([^\"]+)\"[^>]*>\\s*(?:<[^>]+>\\s*)*Fahrzeug als PDF"
+  },
+  "enums": {
+    "transmission": {
+      "Automatik": "automatic",
+      "Schaltgetriebe": "manual"
+    },
+    "drive": {
+      "Frontantrieb": "front_wheel_drive",
+      "Heckantrieb": "rear_wheel_drive",
+      "Allradantrieb": "all_wheel_drive"
+    },
+    "fuel": {
+      "Super": "petrol",
+      "Super Plus": "petrol",
+      "Diesel": "diesel",
+      "Elektro": "electric",
+      "Hybrid-Benzin": "hybrid_petrol",
+      "Hybrid-Diesel": "hybrid_diesel",
+      "Erdgas": "cng",
+      "Autogas": "lpg"
+    },
+    "make_case": {
+      "seat": "SEAT",
+      "cupra": "CUPRA",
+      "skoda": "Škoda"
+    }
+  }
+}

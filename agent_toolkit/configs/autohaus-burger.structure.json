@@ -1,0 +1,233 @@
+{
+  "_comment": "Facts for autohaus-burger.de, every node cites its source_url. Unpublished values are left out, never invented.",
+  "defaults": {
+    "address": {
+      "street": "Ehinger Straße 17 + 21-25",
+      "postal_code": "89143",
+      "city": "Blaubeuren",
+      "country": "DE"
+    },
+    "country_name": "Germany",
+    "maps_query": "Autohaus Burger, Ehinger Straße 21, 89143 Blaubeuren",
+    "website_url": "https://autohaus-burger.de"
+  },
+  "levels": {
+    "group": 1,
+    "location": 2,
+    "department": 3
+  },
+  "nodes": [
+    {
+      "id": "G1",
+      "parent": null,
+      "level": "group",
+      "name": "Autohaus Burger GmbH & Co. KG",
+      "brands": [
+        "Volkswagen",
+        "Audi",
+        "Škoda",
+        "SEAT",
+        "CUPRA",
+        "Volkswagen Nutzfahrzeuge"
+      ],
+      "phone": "+49 7344 9600-0",
+      "fax": "+49 7344 9600-20",
+      "email": "info@autohaus-burger.de",
+      "source_url": "https://autohaus-burger.de/impressum/",
+      "notes": "Legal entity per Impressum: Registergericht Ulm HRA 1657; general partner Burger GmbH (HRB 4357); managing: Joachim Burger. Single site. Opening hours: the site publishes hours per department only (see department rows)."
+    },
+    {
+      "id": "L1",
+      "parent": "G1",
+      "level": "location",
+      "name": "Autohaus Burger Blaubeuren",
+      "brands": [
+        "Volkswagen",
+        "Audi",
+        "Škoda",
+        "SEAT",
+        "CUPRA",
+        "Volkswagen Nutzfahrzeuge"
+      ],
+      "phone": "+49 7344 9600-0",
+      "fax": "+49 7344 9600-20",
+      "email": "info@autohaus-burger.de",
+      "source_url": "https://autohaus-burger.de/kontakt/",
+      "notes": "Only showroom/site listed. Billing address Ehinger Str. 21-25; Impressum lists 17 + 21-25. Maps URL is a search link built from the address (site publishes no Maps link). Opening hours: the site publishes hours per department only (see department rows)."
+    },
+    {
+      "id": "D1",
+      "parent": "L1",
+      "level": "department",
+      "name": "New car sales (Neuwagenverkauf)",
+      "department_type": "new_car_sales",
+      "brands": [
+        "Volkswagen",
+        "Audi",
+        "Škoda",
+        "SEAT",
+        "CUPRA"
+      ],
+      "phone": "+49 7344 9600-0",
+      "email": "info@autohaus-burger.de",
+      "opening_hours": "Mo-Fr 08:00-18:00; Sa 09:00-12:00",
+      "opening_hours_text": "Montag - Freitag: 08:00 - 18:00 Uhr; Samstag: 09:00 - 12:00 Uhr",
+      "source_url": "https://autohaus-burger.de/neuwagen/",
+      "notes": "New cars currently online are Volkswagen only."
+    },
+    {
+      "id": "D2",
+      "parent": "L1",
+      "level": "department",
+      "name": "Used car sales (Gebrauchtwagenverkauf)",
+      "department_type": "used_car_sales",
+      "brands": [
+        "Volkswagen",
+        "Audi",
+        "Škoda",
+        "SEAT",
+        "CUPRA"
+      ],
+      "phone": "+49 7344 9600-0",
+      "email": "info@autohaus-burger.de",
+      "opening_hours": "Mo-Fr 09:00-18:00; Sa 09:00-12:00",
+      "opening_hours_text": "Montag - Freitag: 09:00 - 18:00 Uhr; Samstag: 09:00 - 12:00 Uhr",
+      "source_url": "https://autohaus-burger.de/gebrauchtwagen/"
+    },
+    {
+      "id": "D3",
+      "parent": "L1",
+      "level": "department",
+      "name": "Service counter (Service)",
+      "department_type": "service",
+      "brands": [
+        "Volkswagen",
+        "Audi",
+        "Škoda",
+        "SEAT",
+        "CUPRA",
+        "Volkswagen Nutzfahrzeuge"
+      ],
+      "phone": "+49 7344 9600-0",
+      "email": "info@autohaus-burger.de",
+      "opening_hours": "Mo-Fr 07:00-18:00; Sa 08:00-12:00",
+      "opening_hours_text": "Montag - Freitag: 07:00 - 18:00 Uhr; Samstag: 08:00 - 12:00 Uhr",
+      "source_url": "https://autohaus-burger.de/service/",
+      "notes": "Online booking via myAudi, Volkswagen We, SEAT, CUPRA, SKODA and commercial-vehicle guest booking. Saturday: only the counter is staffed (footer note). 24-hour key safe (24 STUNDEN SCHLÜSSELTRESOR) on /service/ for dropping off or collecting keys outside opening hours."
+    },
+    {
+      "id": "D4",
+      "parent": "L1",
+      "level": "department",
+      "name": "Workshop (Werkstatt)",
+      "department_type": "workshop",
+      "brands": [
+        "Volkswagen",
+        "Audi",
+        "Škoda",
+        "SEAT",
+        "CUPRA",
+        "Volkswagen Nutzfahrzeuge"
+      ],
+      "phone": "+49 7344 9600-0",
+      "email": "info@autohaus-burger.de",
+      "opening_hours": "Mo-Fr 08:00-16:30; Sa off",
+      "opening_hours_text": "Montag - Freitag: 08:00 - 16:30 Uhr; Samstag: geschlossen",
+      "source_url": "https://autohaus-burger.de/kontakt/",
+      "notes": "Footer shows Service und Werkstatt 07:00-18:00 / Sa 08:00-12:00, but the footer's asterisk says the workshop is closed on Saturday; /kontakt/ values used."
+    },
+    {
+      "id": "D5",
+      "parent": "L1",
+      "level": "department",
+      "name": "Parts & accessories (Teile- und Zubehörverkauf)",
+      "department_type": "parts",
+      "brands": [
+        "Volkswagen",
+        "Audi",
+        "Škoda",
+        "SEAT",
+        "CUPRA",
+        "Volkswagen Nutzfahrzeuge"
+      ],
+      "phone": "+49 7344 9600-0",
+      "email": "info@autohaus-burger.de",
+      "opening_hours": "Mo-Fr 07:00-17:00",
+      "opening_hours_text": "Mo. - Fr. 07:00 Uhr - 17:00 Uhr",
+      "source_url": "https://autohaus-burger.de/service/",
+      "notes": "Express parts service, 98% of parts within 24h."
+    },
+    {
+      "id": "D6",
+      "parent": "L1",
+      "level": "department",
+      "name": "Vehicle purchase (Ankauf)",
+      "department_type": "vehicle_purchase",
+      "phone": "+49 7344 9600-40",
+      "email": "info@autohaus-burger.de",
+      "source_url": "https://autohaus-burger.de/ankauf/",
+      "notes": "Advice line +49 7344 96 00 40. Opening hours and brands: not published for this department."
+    },
+    {
+      "id": "D7",
+      "parent": "L1",
+      "level": "department",
+      "name": "Fleet & corporate customers (Großkunden)",
+      "department_type": "fleet_sales",
+      "brands": [
+        "Volkswagen",
+        "Audi"
+      ],
+      "phone": "+49 7344 9600-99",
+      "email": "info@autohaus-burger.de",
+      "source_url": "https://autohaus-burger.de/grosskunden/",
+      "notes": "Large-account service centre for Audi and VW; sales contact line -99. Named staff omitted on purpose. Opening hours: not published for this department."
+    },
+    {
+      "id": "D8",
+      "parent": "L1",
+      "level": "department",
+      "name": "JobCar (employee car leasing)",
+      "department_type": "leasing",
+      "phone": "+49 7344 9600-0",
+      "email": "info@autohaus-burger.de",
+      "source_url": "https://autohaus-burger.de/jobcar-by-autohaus-burger/",
+      "notes": "Opening hours and brands: not published for this department."
+    },
+    {
+      "id": "D9",
+      "parent": "L1",
+      "level": "department",
+      "name": "Body & paint shop (Karosserie- und Lackfachbetrieb)",
+      "department_type": "body_shop",
+      "phone": "+49 7344 9600-0",
+      "email": "info@autohaus-burger.de",
+      "source_url": "https://autohaus-burger.de/service/",
+      "notes": "Accident repair, paintwork, dent removal, windscreen repair. No brand restriction or separate hours stated on the site. Opening hours and brands: not published for this department."
+    },
+    {
+      "id": "D10",
+      "parent": "L1",
+      "level": "department",
+      "name": "E-mobility (E-Mobilität by Burger)",
+      "department_type": "e_mobility",
+      "phone": "+49 7344 9600-0",
+      "email": "info@autohaus-burger.de",
+      "source_url": "https://autohaus-burger.de/e-mobilitaet/",
+      "notes": "EV advice, charging solutions, installation service, tariffs, subsidies; advice line +49 7344 96 00 0. No brand restriction or hours stated. Opening hours and brands: not published for this department."
+    },
+    {
+      "id": "D11",
+      "parent": "L1",
+      "level": "department",
+      "name": "24h emergency & towing (Notdienst)",
+      "department_type": "roadside_assistance",
+      "phone": "+49 176 62935356",
+      "email": "info@autohaus-burger.de",
+      "opening_hours": "24/7",
+      "opening_hours_text": "365 Tage, 24h erreichbar",
+      "source_url": "https://autohaus-burger.de/kontakt/",
+      "notes": "Accident, breakdown and towing hotline. Brands: not published for this department."
+    }
+  ]
+}
