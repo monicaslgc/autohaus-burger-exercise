@@ -96,17 +96,42 @@ def sitemap_urls(delay):
 
 
 def api_check(cars, delay):
-    """Cross-check against the site's own public search API (/wp-json/ecc/v1/search): it reports how many cars
-    the dealer currently offers. Our result must match that total and its ids."""
+    """Cross-check against the site's own public API. Returns True only if everything agrees.
+    1) /wp-json/ecc/v1/search: total and ids must equal ours.
+    2) /wp-json/ecc/v1/cars: for every car, listing URL, price, mileage and the full image list must equal ours."""
     body = get(f"{BASE}/wp-json/ecc/v1/search", delay)
     if not body:
-        print("API cross-check skipped (endpoint not reachable)", file=sys.stderr)
-        return
+        print("API cross-check NOT DONE (endpoint not reachable)", file=sys.stderr)
+        return False
     api = json.loads(body)
     api_ids = {str(v["id"]) for v in api.get("vehicles", [])}
     ours = {str(c["vehicle_id"]) for c in cars}
-    verdict = "MATCH" if api_ids == ours else f"MISMATCH (only API: {len(api_ids - ours)}, only ours: {len(ours - api_ids)})"
-    print(f"API cross-check: site reports {api.get('total')} cars, scraper has {len(cars)} -> {verdict}", file=sys.stderr)
+    ids_ok = api_ids == ours
+    verdict = "MATCH" if ids_ok else f"MISMATCH (only API: {len(api_ids - ours)}, only ours: {len(ours - api_ids)})"
+    print(f"API cross-check (ids): site reports {api.get('total')} cars, scraper has {len(cars)} -> {verdict}", file=sys.stderr)
+
+    body = get(f"{BASE}/wp-json/ecc/v1/cars", delay)
+    if not body:
+        print("API cross-check (fields) NOT DONE (endpoint not reachable)", file=sys.stderr)
+        return False
+    num = lambda t: int(re.sub(r"\D", "", t)) if re.search(r"\d", t or "") else None  # noqa: E731
+    by_url = {c["listing_url"]: c for c in cars}
+    diffs = []
+    for r in json.loads(body):
+        c = by_url.get(r.get("link"))
+        f = r.get("filters", {})
+        if c is None:
+            diffs.append(f"{r.get('link')}: not in our result")
+        elif num(f.get("Preis")) != c["price"]["amount"]:
+            diffs.append(f"{r['link']}: price")
+        elif num(f.get("Kilometer")) != c["mileage_km"]:
+            diffs.append(f"{r['link']}: mileage")
+        elif set(r.get("images", [])) != set(c["images"]):
+            diffs.append(f"{r['link']}: images")
+    fields_ok = not diffs and len(json.loads(body)) == len(cars)
+    print(f"API cross-check (fields): link, price, mileage, images of {len(cars)} cars -> "
+          + ("MATCH" if fields_ok else f"MISMATCH ({len(diffs)} e.g. {diffs[:3]})"), file=sys.stderr)
+    return ids_ok and fields_ok
 
 
 def clean(s):
@@ -267,7 +292,8 @@ def main():
     with open(a.out, "w", encoding="utf-8") as f:
         json.dump(cars, f, ensure_ascii=False, indent=2)
     print(f"wrote {len(cars)} vehicles to {a.out}; failed: {failed}", file=sys.stderr)
-    api_check(cars, a.delay)
+    if failed or not api_check(cars, a.delay):
+        sys.exit(1)  # never report success for an incomplete or unverified result
 
 
 def _bootstrap():
