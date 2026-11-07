@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Quality gate for an inventory.json produced by a dealer scraper.
 
-Usage:  python validate_inventory.py inventory.json [--expect 126] [--structure dealership_structure.csv]
+Usage:  python validate_inventory.py inventory.json [--expect 124] [--structure dealership_structure.csv]
 
 Exit code 0 = no errors (warnings are fine), 1 = at least one error. Run it after EVERY scrape.
 Checks: count vs expectation, duplicates, required keys, numeric types, impossible values,

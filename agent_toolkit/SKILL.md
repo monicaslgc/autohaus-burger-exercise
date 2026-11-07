@@ -9,7 +9,7 @@ description: Onboard a car dealership website. Scrape the full new + used invent
 **Run from YOUR working folder (where the outputs should land), not from SKILL_DIR:** call the scripts by full path, `python "<SKILL_DIR>/tools/<script>.py" ...`. The scripts take every input and output path as an argument and never depend on where they are stored. Quote paths that contain spaces.
 
 Everything below is stdlib-only Python 3.9+. A worked example (autohaus-burger.de) ships in `configs/`;
-running the generic tools with it reproduces the reference `inventory.json` (126 cars) and
+running the generic tools with it reproduces the reference `inventory.json` (the 7 Nov 2026 snapshot, 124 cars) and
 `dealership_structure.csv` exactly - use that as your regression test before touching the tools.
 
 ```
@@ -66,7 +66,7 @@ found (bad `vehicle_url_regex`/sources); 3 every page rejected (bad `jsonld_type
 Debug loop: change one regex, rerun with `--limit 3`, diff the output.
 
 ## Pitfalls seen on the reference site (check on every new dealer)
-- ID shapes: 20 cars (all 9 new ones) had letter-prefixed IDs (`hk2332`, `v08619`). A digits-only URL regex silently dropped them from listing, sitemap and new-car page alike and still produced a plausible 106-car file -> never trust one regex or one source: compare listing vs sitemap vs API counts and check that new cars exist.
+- ID shapes: 20 cars (all 9 new ones) had letter-prefixed IDs (`hk2332`, `v08619`). A digits-only URL regex silently dropped them from listing, sitemap and new-car page alike and still produced a plausible file that was 20 cars short -> never trust one regex or one source: compare listing vs sitemap vs API counts and check that new cars exist.
 - Generic path patterns also match `/feed/` and `/page/` - require vehicle JSON-LD to accept a page.
 - A sitemap can be stale: one dealer's sitemap listed ~62k vehicle URLs but the ones sampled returned 404 (sold cars) while the paginated listing (~80 pages) held the live stock. Sample a few sitemap URLs before trusting a sitemap as a source; the scraper skips 404s but would waste hours on 60k of them.
 - Detail pages can embed "similar cars" galleries: image counts of 100+ per car are a sign (use `image_scope_regex`).

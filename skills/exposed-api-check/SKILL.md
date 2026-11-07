@@ -34,7 +34,7 @@ python "<SKILL_DIR>/tools/api_probe.py" https://example.com --max-fetch 10 --del
 ## How to read the report
 - **Hints on the home page**: platform (WordPress ...), `link rel` feeds/`wp-json`, embedded JSON (`__NEXT_DATA__`, Nuxt, Apollo), JSON-LD types, API-looking URLs found inside the site's own JS (this is how `/wp-json/ecc/v1/cars` showed up), third-party script hosts (NOT the site's API).
 - **Well-known paths**: `200 + json/xml` = real; `200 + HTML` is a catch-all page, not an API (the script labels it); 404 = absent.
-- **WordPress REST**: route count and namespaces; then up to `--max-fetch` safe data routes with the shape (`list of N`, `object with vehicles[126]`) and field names only.
+- **WordPress REST**: route count and namespaces; then up to `--max-fetch` safe data routes with the shape (`list of N`, `object with vehicles[N]`) and field names only.
 - **usable public data endpoints** = candidates for the scraper or for a completeness cross-check (compare total and ids with what you scraped).
 - **Advertised but NOT probed** = sensitive-looking routes in the public index. Normally they need auth; the point is that they are listed. Tell the owner in one sentence, do not test them.
 - **NOTE lines** = things worth reporting (user enumeration, many admin routes listed).
@@ -45,7 +45,7 @@ python "<SKILL_DIR>/tools/api_probe.py" https://example.com --max-fetch 10 --del
 3. Exposure notes -> write them in the hand-over/write-up as an observation ("route list is public, not accessed"), never as a test result.
 
 ## Worked example (autohaus-burger.de, WordPress + Avada + vehicle plugin)
-`api_probe.py https://autohaus-burger.de` -> 34 requests; found `/wp-json/ecc/v1/cars` in the site's JS, `/wp-json/ecc/v1/search` returning 126 vehicles (matched the 126 scraped cars), 9 usable data endpoints, 415 routes in the index, 106 sensitive-looking routes listed but not touched (cookie plugin, theme/plugin manager, backup/DB admin), `/wp/v2/users` public. `openapi`, `swagger`, `graphql` absent; `/api/v1/` is an HTML page.
+`api_probe.py https://autohaus-burger.de` -> 34 requests; found `/wp-json/ecc/v1/cars` in the site's JS, `/wp-json/ecc/v1/search` returning all the vehicles (matched the scraped cars), 9 usable data endpoints, 415 routes in the index, 106 sensitive-looking routes listed but not touched (cookie plugin, theme/plugin manager, backup/DB admin), `/wp/v2/users` public. `openapi`, `swagger`, `graphql` absent; `/api/v1/` is an HTML page.
 
 ## Limits
 - It cannot see APIs that are only called after a login, in a mobile app, or from JS it did not fetch (only the first 8 same-origin scripts are read).

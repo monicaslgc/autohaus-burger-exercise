@@ -49,7 +49,35 @@ def _ez(s):
     return (int(m.group(2)), int(m.group(1))) if m else (None, None)
 
 
+
+_DISALLOWED = None
+
+
+def robots_allows(url):
+    """Honour robots.txt: never request a path that is disallowed for User-agent: * (this site disallows nothing)."""
+    global _DISALLOWED
+    if _DISALLOWED is None:
+        _DISALLOWED = []
+        try:
+            req = urllib.request.Request(BASE + "/robots.txt", headers={"User-Agent": UA})
+            body = urllib.request.urlopen(req, timeout=30).read().decode("utf-8", "replace")
+            for_all = False
+            for line in body.splitlines():
+                line = line.split("#")[0].strip()
+                if line.lower().startswith("user-agent:"):
+                    for_all = line.split(":", 1)[1].strip() == "*"
+                elif for_all and line.lower().startswith("disallow:") and line.split(":", 1)[1].strip():
+                    _DISALLOWED.append(line.split(":", 1)[1].strip())
+        except Exception:
+            pass
+    path = url[len(BASE):] if url.startswith(BASE) else ""
+    return not any(path.startswith(d) for d in _DISALLOWED)
+
+
 def get(url, delay, tries=3):
+    if not robots_allows(url):
+        print(f"  skipped (robots.txt): {url}", file=sys.stderr)
+        return None
     for attempt in range(tries):
         try:
             req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept-Language": "de,en;q=0.7"})
