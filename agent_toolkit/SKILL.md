@@ -22,7 +22,7 @@ inventory.schema.json      output contract (JSON Schema)
 ```
 
 ## Rules (non-negotiable)
-- Scrape politely: identifiable User-Agent, >= 1 s between requests, retries with back-off. Respect robots.txt. Only public GET endpoints.
+- Scrape politely: identifiable User-Agent, >= 1 s between requests, retries with back-off. Respect robots.txt (`dealer_scrape.py` reads it and never requests a path disallowed for `*`; if a disallowed path is the only source, stop and ask the owner). Only public GET endpoints.
 - Only collect what the public site shows. No logins, no forms. No personal data: no named staff, personal emails or direct lines in the CSV - use the dealership's general lines.
 - Never invent data. Not published => `null` / empty cell, and say so in the write-up. Examples that are NOT errors: a new car has no first registration or year; an EV has no displacement; a department with no published hours has empty hours.
 - English keys, consistent types: numbers as numbers, unit in the key (`mileage_km`, `power_kw`), currency separate, dates `YYYY-MM`.

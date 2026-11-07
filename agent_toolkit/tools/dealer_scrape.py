@@ -36,12 +36,37 @@ class Fetcher:
         self.headers = {"User-Agent": os.environ.get("SCRAPER_USER_AGENT") or cfg.get("user_agent", "Mozilla/5.0 (compatible; DealerOnboarding/1.0; polite, throttled)"),
                         "Accept-Language": cfg.get("accept_language", "en,de;q=0.7")}
         self.delay = delay
+        self.disallowed = None  # robots.txt "Disallow" prefixes for User-agent: *, loaded on first use
+
+    def _load_robots(self):
+        self.disallowed = []
+        try:
+            with urllib.request.urlopen(urllib.request.Request(self.base + "/robots.txt", headers=self.headers), timeout=30) as r:
+                body = r.read().decode("utf-8", "replace")
+        except Exception:
+            return  # no readable robots.txt = nothing to respect
+        time.sleep(self.delay)
+        agent_all = False
+        for line in body.splitlines():
+            line = line.split("#")[0].strip()
+            if line.lower().startswith("user-agent:"):
+                agent_all = line.split(":", 1)[1].strip() == "*"
+            elif agent_all and line.lower().startswith("disallow:") and line.split(":", 1)[1].strip():
+                self.disallowed.append(line.split(":", 1)[1].strip())
+        if self.disallowed:
+            log("robots.txt disallows for everyone (never requested): " + ", ".join(self.disallowed))
 
     def abs(self, path):
         return path if path.startswith("http") else self.base + path
 
     def get(self, url, tries=3):
         url = self.abs(url)
+        if self.disallowed is None:
+            self._load_robots()
+        path = url[len(self.base):] if url.startswith(self.base) else None
+        if path is not None and any(path.startswith(d) for d in self.disallowed):
+            log(f"  skipped (robots.txt): {url}")
+            return None
         err = None
         for attempt in range(tries):
             try:
